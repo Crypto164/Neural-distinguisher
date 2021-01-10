@@ -12,4 +12,5 @@
 
 
 The division property is implemented using minizinc optmization tool which can be found at https://www.minizinc.org
+
 Also to run the deep learning CNN algorithms,  a fast gpu-based enviorment can be found at https://colab.research.google.com

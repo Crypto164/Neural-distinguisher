@@ -10,7 +10,7 @@ from keras.regularizers import l2
 import numpy as np
 from keras import layers
 from keras import models
-
+from keras.layers import Dropout
 bs = 5000
 
 def cyclic_lr(num_epochs, high_lr, low_lr):

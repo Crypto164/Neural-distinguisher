@@ -6,7 +6,7 @@
 
 3. These algorithms are implemented by behnam zahednejad, State Key Laboratory of Information Security, Guangzhou university
 
-4.The project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet. 
+4. The project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet. 
 
 5. The implementation of the key recovery attack on speck block cipher is on the key recovery folder. 
 

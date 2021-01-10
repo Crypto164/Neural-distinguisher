@@ -182,11 +182,7 @@ def make_train_data(n, nr):
     
     
     arr=[[0,0,0,0],[0,0,0,1],[0,0,1,0],[0,0,1,1],[0,1,0,0],[0,1,0,1],[0,1,1,0],[0,1,1,1],[1,0,0,0],[1,0,0,1],[1,0,1,0],[1,0,1,1],[1,1,0,0],[1,1,0,1],[1,1,1,0],[1,1,1,1 ]]
-
- 
     
-    
-
     Active=np.array(arr).transpose()
 
 
@@ -246,7 +242,21 @@ def cyclic_lr(num_epochs, high_lr, low_lr):
 def make_checkpoint(datei):
   res = ModelCheckpoint(datei, monitor='val_loss', save_best_only = True)
   return(res)
+cardinality = 32
+def grouped_convolution(y, nb_channels,ks):
+       
+        # in a grouped convolution layer, input and output channels are divided into `cardinality` groups,
+        # and convolutions are separately performed within each group
+        _d = nb_channels // cardinality
+        groups = []
+        for j in range(cardinality):
+            groups.append(layers.Conv1D(_d, kernel_size=ks, padding='same')(y))
+            
+        # the grouped convolutional layer concatenates them as the outputs of the layer
+        y = layers.concatenate(groups)
+        
 
+        return y
 #make residual tower of convolutional blocks
 def make_resnet(num_words=16,multiset=16, num_filters=512, num_outputs=1, d1=1024, d2=1024, word_size=4, ks=3,depth=5, reg_param=0.0001, final_activation='sigmoid'):
   #Input and preprocessing layers

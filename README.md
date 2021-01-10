@@ -9,5 +9,7 @@
 4.The project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet. 
 
 5. The implementation of the key recovery attack on speck block cipher is on the key recovery folder. 
+
+
 The division property is implemented using minizinc optmization tool which can be found at https://www.minizinc.org
 Also to run the deep learning CNN algorithms,  a fast gpu-based enviorment can be found at https://colab.research.google.com

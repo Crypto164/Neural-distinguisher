@@ -4,11 +4,13 @@
 
 2. For more information, feedback or questions, pleast contact at bzahednezhad@gmail.com
 
-3. These algorithms are implemented by behnam zahednejad, State Key Laboratory of Information Security, Guangzhou university
+3. These algorithms are implemented by behnam zahednejad, Institute of Artifcial Intelligence and Blockchain, Guangzhou University.
 
 4. The project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet. 
 
-5. The implementation of the key recovery attack on speck block cipher is on the key recovery folder. 
+5. The implementaton of few-shot learning in training different block ciphers are in the Few-shot folder
+
+6. The implementation of the key recovery attack on speck block cipher is in the key recovery folder. 
 
 
 The division property is implemented using minizinc optmization tool which can be found at https://www.minizinc.org

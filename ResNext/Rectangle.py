@@ -219,4 +219,4 @@ import numpy as np
 from random import randint
 
 
-train_rect_distinguisher(500,num_rounds=6,depth=10)
+train_rect_distinguisher(10,num_rounds=6,depth=10)

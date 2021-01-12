@@ -1,6 +1,6 @@
 import numpy as np
 from os import urandom
-wdir = '/content/drive/My Drive/b/'
+from keras import layers
 
 
 def expand_key(k, t,n):
@@ -325,7 +325,5 @@ import numpy as np
 from random import randint
 
 
-#print(np.load(wdir+'data_6r_attack7'+'.npy'))
-#test(7,8)
 train_lblock_distinguisher(10,num_rounds=11,depth=10)
 

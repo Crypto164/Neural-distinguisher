@@ -197,4 +197,4 @@ def train_speck_distinguisher(num_epochs, num_rounds, depth):
     print("Best validation accuracy: ", np.max(h.history['val_acc']))
     return(net, h)
     
-train_speck_distinguisher(50,num_rounds=3,depth=10)
+train_speck_distinguisher(10,num_rounds=5,depth=10)

@@ -1,6 +1,6 @@
 import numpy as np
 from os import urandom
-
+from keras import layers
 
 def expand_key(k, t,n):
     ks = np.zeros((t,4,16,n),dtype=np.uint8)

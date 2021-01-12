@@ -1,6 +1,6 @@
 import numpy as np
 from os import urandom
-wdir = '/content/drive/My Drive/b/'
+from keras import layers
 
 
 def expand_key(k, t,n):
@@ -222,17 +222,11 @@ def train_present_distinguisher(num_epochs, num_rounds, depth):
     #check = make_checkpoint(wdir+'best'+str(num_rounds)+'depth'+str(depth)+'.h5');
     #create learnrate schedule
     lr = LearningRateScheduler(cyclic_lr(10,0.002, 0.0001))
-    #train and evaluate
-    #check = make_checkpoint(wdir+'present'+'8round'+'weights.{epoch:02d}-{val_acc:.2f}.hdf5')
+    
     from keras.models import model_from_json
 # serialize model to json
     json_model = net.to_json()
-    #save the model architecture to JSON file
-    #with open(wdir+'speck.json7', 'w') as json_file:
-        #json_file.write(json_model)
-    #saving the weights of the model
-    #net.save_weights(wdir+'speck_weights7.h5')
-    #net.load_weights('/content/gdrive/My Drive/b/5roundweights.09-0.50.hdf5')
+    
     h = net.fit(X,Y,epochs=num_epochs,batch_size=bs,validation_data=(X_eval, Y_eval), callbacks=[lr])
     print("Best validation accuracy: ", np.max(h.history['val_acc']))
     return(net, h)
@@ -246,6 +240,4 @@ import numpy as np
 from random import randint
 
 
-#print(np.load(wdir+'data_6r_attack7'+'.npy'))
-#test(7,8)
 train_present_distinguisher(10,num_rounds=8,depth=10)

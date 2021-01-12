@@ -1,6 +1,5 @@
 import numpy as np
 from os import urandom
-wdir = '/content/drive/My Drive/b/'
 
 
 def expand_key(k, t,n):

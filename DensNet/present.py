@@ -224,6 +224,4 @@ import numpy as np
 from random import randint
 
 
-#print(np.load(wdir+'data_6r_attack7'+'.npy'))
-#test(7,8)
-train_present_distinguisher(500,num_rounds=8,depth=10)
+train_present_distinguisher(10,num_rounds=8,depth=10)

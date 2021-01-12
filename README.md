@@ -10,7 +10,7 @@
 
 5. The implementaton of few-shot learning in training different block ciphers are in the Few-shot folder
 
-6. The implementation of the key recovery attack on speck block cipher is in the key recovery folder. 
+6. The implementation of the key recovery attack on speck block cipher is in the key recovery file. In order to use this file, you should first save the trained model of speck and then load it in this file.
 
 
 The division property is implemented using minizinc optmization tool which can be found at https://www.minizinc.org

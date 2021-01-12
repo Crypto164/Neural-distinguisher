@@ -8,7 +8,7 @@ from keras.layers import Dense, Conv1D, Input, Reshape, Permute, Add, Flatten, B
 from keras import backend as K
 from keras.regularizers import l2
 import numpy as np
-
+from keras import layers
 bs = 5000
 
 def cyclic_lr(num_epochs, high_lr, low_lr):

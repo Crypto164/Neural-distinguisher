@@ -7,6 +7,7 @@ from keras.regularizers import l2
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from tensorflow.keras import layers
 
 ### cipher
 bs = 5000

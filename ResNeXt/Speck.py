@@ -6,6 +6,7 @@ from keras.layers import Dense, Conv1D, Input, Reshape, Permute, Add, Flatten, B
 from keras.regularizers import l2
 import matplotlib.pyplot as plt
 import time
+from tensorflow.keras import layers
 
 bs = 5000
 

@@ -7,6 +7,8 @@ from keras.regularizers import l2
 import matplotlib.pyplot as plt
 import time
 
+from tensorflow.keras import layers
+
 bs = 5000
 
 cardinality = 32

@@ -1,6 +1,6 @@
 # Integral Neural-Distinguisher
 
-1. The project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet. 
+1. This project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet which are available in the corresponding folders。
 
 2. The implementaton of transfer learning in training different block ciphers are in the Transfer folder
 

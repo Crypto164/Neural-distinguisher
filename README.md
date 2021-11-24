@@ -2,7 +2,7 @@
 
 1. This project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet which are available in the corresponding folders。
 
-2. The implementaton of transfer learning in training different block ciphers are in the Transfer folder
+2. The implementaton of transfer learning in training different block ciphers are in the Few-shot folder
 
 3. The implementation of the key recovery attack on speck block cipher is in the key recovery file. In order to use this file, you should first save the trained model of speck and then load it in this file.
 

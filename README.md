@@ -1,15 +1,7 @@
-# Integral Neural-Distinguisher
+# Cryptographic evaluation of IoT with machine learning
 
-1. This project implements the integral distingusher on different block ciphers using division prperty (using minizinc tool), and deep learning CNN algorithms namely ResNet, ResNext and DensNet which are available in the corresponding folders。
+This file contains the implementations of verification of authentication schemes with machine learning and the symmetric neural distinguisher of IoT block ciphers developed in chapter 4 and 5 of the thesis. They are put inside the authentication and distinguisher files, respectively. 
 
-2. The implementaton of transfer learning in training different block ciphers are in the Few-shot folder
+1. "Authentication" file contains all the data set and python codes in analysis of strong authentication, key freshness, key authentication, Unknown Key Share (UKS) and password guessing attack in authentication and key agreement protocols described in chapter 4. 
 
-3. The implementation of the key recovery attack on speck block cipher is in the key recovery file. In order to use this file, you should first save the trained model of speck and then load it in this file.
-
-4. The implementation of the same-difference experiment on Speck32/64 is in the same-diff exp file.
-5. The implementation of algorithm 2 as well as our Neural networks on the S-BOX of PRESENT cipher is in the our proposed features folder.
-
-
-The division property is implemented using minizinc optmization tool which can be found at https://www.minizinc.org
-
-Also to run the deep learning CNN algorithms,  a fast gpu-based enviorment can be found at https://colab.research.google.com
+2. "Distinguisher" file contains the implementations of our NN-based symmetric cipher distinguisher described in chapter 5. 

@@ -1,141 +1,129 @@
+import numpy as np
+from os import urandom
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.backend import concatenate
+from tensorflow.keras import backend as K
+from tensorflow.keras.layers import Dense, AveragePooling1D, Conv1D, MaxPooling1D, Input, Reshape, Permute, Add, Flatten, BatchNormalization, Activation
+from tensorflow.nn import dropout
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+# import keras
+from pickle import dump
+import tensorflow as tf
+import numpy as np
+import tensorflow
+
+
+
+
+diff=(0x10);
 
 
 import numpy as np
-from os import urandom
 
-n=2**12
-Y = np.frombuffer(urandom(n), dtype=np.uint8); Y = Y & 1;
-plain0 = np.frombuffer(urandom(2*n),dtype=np.uint16);
-plain1 = plain0 ^ 1;
-plain2 = plain0 ^ 2;
-plain3 = plain0 ^ 3;
-num_rand_samples = np.sum(Y==0);
-plain1[Y==0] = np.frombuffer(urandom(2*num_rand_samples),dtype=np.uint16);
-plain2[Y==0] = np.frombuffer(urandom(2*num_rand_samples),dtype=np.uint16);
-plain3[Y==0] = np.frombuffer(urandom(2*num_rand_samples),dtype=np.uint16);
-def convert_to_binary(arr):
-        """ Convert decimal to binary bits"""
-        X = np.zeros((4,n), dtype=np.uint8);
-        for i in range(4):
-            offset=3 - i;
-            X[i]=(arr >> offset) & 1;
-            # TODO: write code...
-        return (X)
-        
 
-p0=convert_to_binary(plain0);
-p1=convert_to_binary(plain1);
-p2=convert_to_binary(plain2);
-p3=convert_to_binary(plain3);
+def concatenate_4arrays(arr1, arr2, arr3, arr4):
+    # combine the arrays into a single 2D array
+    combined = np.vstack((arr1, arr2, arr3, arr4)).T
 
-z0 = np.zeros((4,n), dtype=np.uint8);
-z0[0 + 3] = 1 ^ p0[0] ^ p0[0 + 1] ^ p0[0 + 3] ^ (p0[0 + 1] & p0[0 + 2]) ^ (p0[0] & p0[0 + 1] & p0[0 + 2]) ^ (
-                    p0[0] & p0[0 + 1] & p0[0 + 3]) ^ (p0[0] & p0[0 + 2] & p0[0 + 3])
-					
-					
-z0[0 + 2] = 1 ^ p0[0 + 2] ^ p0[0 + 3] ^ (p0[0] & p0[0 + 1]) ^ (p0[0] & p0[0 + 3]) ^ (p0[0 + 1] & p0[0 + 3]) ^ (
-                    p0[0] & p0[0 + 1] & p0[0 + 3]) ^ (p0[0] & p0[0 + 2] & p0[0 + 3])
-					
-					
-z0[0 + 1] = p0[0 + 1] ^ p0[0 + 3] ^ (p0[0 + 1] & p0[0 + 3]) ^ (p0[0 + 2] & p0[0 + 3]) ^ (
-                    p0[0] & p0[0 + 1] & p0[0 + 2]) ^ (p0[0] & p0[0 + 1] & p0[0 + 3]) ^ (p0[0] & p0[0 + 2] & p0[0 + 3])
-					
-					
-z0[0] = p0[0] ^ p0[0 + 2] ^ p0[0 + 3] ^ (p0[0 + 1] & p0[0 + 2])
-z1 = np.zeros((4,n), dtype=np.uint8);
-z1[0 + 3] = 1 ^ p1[0] ^ p1[0 + 1] ^ p1[0 + 3] ^ (p1[0 + 1] & p1[0 + 2]) ^ (p1[0] & p1[0 + 1] & p1[0 + 2]) ^ (
-                    p1[0] & p1[0 + 1] & p1[0 + 3]) ^ (p1[0] & p1[0 + 2] & p1[0 + 3])
-					
-					
-z1[0 + 2] = 1 ^ p1[0 + 2] ^ p1[0 + 3] ^ (p1[0] & p1[0 + 1]) ^ (p1[0] & p1[0 + 3]) ^ (p1[0 + 1] & p1[0 + 3]) ^ (
-                    p1[0] & p1[0 + 1] & p1[0 + 3]) ^ (p1[0] & p1[0 + 2] & p1[0 + 3])
-					
-					
-z1[0 + 1] = p1[0 + 1] ^ p1[0 + 3] ^ (p1[0 + 1] & p1[0 + 3]) ^ (p1[0 + 2] & p1[0 + 3]) ^ (
-                    p1[0] & p1[0 + 1] & p1[0 + 2]) ^ (p1[0] & p1[0 + 1] & p1[0 + 3]) ^ (p1[0] & p1[0 + 2] & p1[0 + 3])
-					
-					
-z1[0] = p1[0] ^ p1[0 + 2] ^ p1[0 + 3] ^ (p1[0 + 1] & p1[0 + 2])
+    # use bitwise operations to convert each row to a single value
+    result = (combined[:, 0] << 3) | (combined[:, 1] << 2) | (combined[:, 2] << 1) | combined[:, 3]
+
+    return result.astype(np.uint8)
+
+
+def concatenate_arrays(arr1, arr2):
+    # combine the arrays into a single 2D array
+    combined = np.vstack((arr1, arr2)).T
+
+    # use bitwise operations to convert each row to a single value
+    result = (combined[:, 0] << 1) | combined[:, 1]
+
+    return result.astype(np.uint8)
+
+
+def convert_to_6_bit(data, k=6):
+    n = len(data)
+    bit_data = np.zeros((k, n), dtype=np.uint8)
+    for j in range(k):
+        bit_mask = 1 << (k - j - 1)
+        bit_data[j, :] = (data & bit_mask) >> (k - j - 1)
+    return bit_data
+	
+n = 10**7  # or any other desired array size
 
 
 
-z2 = np.zeros((4,n), dtype=np.uint8);
-z2[0 + 3] = 1 ^ p2[0] ^ p2[0 + 1] ^ p2[0 + 3] ^ (p2[0 + 1] & p2[0 + 2]) ^ (p2[0] & p2[0 + 1] & p2[0 + 2]) ^ (
-                    p2[0] & p2[0 + 1] & p2[0 + 3]) ^ (p2[0] & p2[0 + 2] & p2[0 + 3])
-					
-					
-z2[0 + 2] = 1 ^ p2[0 + 2] ^ p2[0 + 3] ^ (p2[0] & p2[0 + 1]) ^ (p2[0] & p2[0 + 3]) ^ (p2[0 + 1] & p2[0 + 3]) ^ (
-                    p2[0] & p2[0 + 1] & p2[0 + 3]) ^ (p2[0] & p2[0 + 2] & p2[0 + 3])
-					
-					
-z2[0 + 1] = p2[0 + 1] ^ p2[0 + 3] ^ (p2[0 + 1] & p2[0 + 3]) ^ (p2[0 + 2] & p2[0 + 3]) ^ (
-                    p2[0] & p2[0 + 1] & p2[0 + 2]) ^ (p2[0] & p2[0 + 1] & p2[0 + 3]) ^ (p2[0] & p2[0 + 2] & p2[0 + 3])
-					
-					
-z2[0] = p2[0] ^ p2[0 + 2] ^ p2[0 + 3] ^ (p2[0 + 1] & p2[0 + 2])
+def sbox_s4(data) -> np.ndarray:
+
+    bin=convert_to_6_bit(data)
+    b = concatenate_4arrays(bin[1], bin[2], bin[3], bin[4])
+    a = concatenate_arrays(bin[0], bin[5])
+    sbox = np.array([
+        [0x7, 0xd, 0xe, 0x3, 0x0, 0x6, 0x9, 0xa, 0x1, 0x2, 0x8, 0x5, 0xb, 0xc, 0x4, 0xf],
+        [0xd, 0x8, 0xb, 0x5, 0x6, 0xf, 0x0, 0x3, 0x4, 0x7, 0x2, 0xc, 0x1, 0xa, 0xe, 0x9],
+        [0xa, 0x6, 0x9, 0x0, 0xc, 0xb, 0x7, 0xd, 0xf, 0x1, 0x3, 0xe, 0x5, 0x2, 0x8, 0x4],
+        [0x3, 0xf, 0x0, 0x6, 0xa, 0x1, 0xd, 0x8, 0x9, 0x4, 0x5, 0xb, 0xc, 0x7, 0x2, 0xe]
+    ], dtype=np.uint8)
+    output=np.take(sbox, np.ravel_multi_index((a, b), sbox.shape)).astype(np.uint8).transpose()
+    boutput=convert_to_6_bit(output,4).transpose()
+    return output
+
+def make_data(n):
+    
+      Y = np.frombuffer(urandom(n), dtype=np.uint8); Y = Y & 1;
+      plain0 = np.frombuffer(urandom(n), dtype=np.uint8);  # generate array with values between 0 and 255
+      plain0 = np.floor_divide(plain0, 4);
+      plain1 = plain0 ^ diff;
+      plain2 = np.frombuffer(urandom(n), dtype=np.uint8);  # generate array with values between 0 and 255
+      plain2 = np.floor_divide(plain2, 4);
+      plain3 = plain2 ^ diff;
+      num_rand_samples = np.sum(Y==0);
+      plain1[Y==0] = np.frombuffer(urandom(num_rand_samples), dtype=np.uint8);  # generate array with values between 0 and 255
+      plain1[Y==0] = np.floor_divide(plain1[Y==0], 4);
+      plain3[Y==0] = np.frombuffer(urandom(num_rand_samples), dtype=np.uint8);  # generate array with values between 0 and 255
+      plain3[Y==0] = np.floor_divide(plain3[Y==0], 4);
+      s0=sbox_s4(plain0);
+      s1=sbox_s4(plain1);
+      s2=sbox_s4(plain2);
+      s3=sbox_s4(plain3); 
+      mask1 = np.array([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F], dtype=np.uint8);
+      mask2 = np.array([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F], dtype=np.uint8);
+      
+      output = np.zeros((256,n), dtype=np.uint8)
+      X = np.zeros((256,4,n), dtype=np.uint8)
+	  
+      index = np.ix_(mask1, mask2)
+
+# Compute the XOR of all possible pairs of input values using NumPy broadcasting
+      for j in range(0, 16):
+        for z in range(0, 16):
+          
+		  output[j * 16 + z] = (index[0][j][0]&s0)^ (index[1][0][z]&s1)
+          #X[j * 16 + z]=convert_to_6_bit(output[j * 16 + z],4)
+
+      output=output.transpose()
+      return(output,Y);
+
+		
+n=2**18;
+n1=2**16;
+
+X, Y = make_data(n)
+X_test, y_test = make_data(n1)
 
 
-z3 = np.zeros((4,n), dtype=np.uint8);
-z3[0 + 3] = 1 ^ p3[0] ^ p3[0 + 1] ^ p3[0 + 3] ^ (p3[0 + 1] & p3[0 + 2]) ^ (p3[0] & p3[0 + 1] & p3[0 + 2]) ^ (
-                    p3[0] & p3[0 + 1] & p3[0 + 3]) ^ (p3[0] & p3[0 + 2] & p3[0 + 3])
-					
-					
-z3[0 + 2] = 1 ^ p3[0 + 2] ^ p3[0 + 3] ^ (p3[0] & p3[0 + 1]) ^ (p3[0] & p3[0 + 3]) ^ (p3[0 + 1] & p3[0 + 3]) ^ (
-                    p3[0] & p3[0 + 1] & p3[0 + 3]) ^ (p3[0] & p3[0 + 2] & p3[0 + 3])
-					
-					
-z3[0 + 1] = p3[0 + 1] ^ p3[0 + 3] ^ (p3[0 + 1] & p3[0 + 3]) ^ (p3[0 + 2] & p3[0 + 3]) ^ (
-                    p3[0] & p3[0 + 1] & p3[0 + 2]) ^ (p3[0] & p3[0 + 1] & p3[0 + 3]) ^ (p3[0] & p3[0 + 2] & p3[0 + 3])
-					
-					
-z3[0] = p3[0] ^ p3[0 + 2] ^ p3[0 + 3] ^ (p3[0 + 1] & p3[0 + 2])
-
-mask0=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-mask1=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-mask2=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-mask3=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+from sklearn.neural_network import MLPClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
 
 
-decz0=z0[0]+2*z0[1]+4*z0[2]+8*z0[3]
-decz1=z1[0]+2*z1[1]+4*z1[2]+8*z1[3]
-decz2=z2[0]+2*z2[1]+4*z2[2]+8*z2[3]
-decz3=z3[0]+2*z3[1]+4*z3[2]+8*z3[3]
+# Create an MLP classifier with two hidden layers, each containing 10 neurons
+clf = MLPClassifier(hidden_layer_sizes=(100, 100), random_state=42)
 
-f = np.zeros((50625,n), dtype=np.uint8);
-i=0
-while i<15 :
-  j=0
-  while j<15:
-    z=0
-    while z<15:
-      k=0
-      while k<15:
-        f[k+15*i+15*j+15*z]=(decz0*mask0[i])%16^(decz1*mask1[j])%16^(decz2*mask2[z])%16^(decz3*mask3[k])%16
-        k+=1
-      z+=1
-    j+=1
-  i+=1;
+# Fit the classifier to the training data
+clf.fit(X, Y)
+accuracy = clf.score(X_test, y_test)
 
-print('1')
-
-print(f[0].reshape((-1,1)).shape)
-x = np.zeros((4096,4096,1), dtype=np.uint8);
-
-x[0]=f[0].reshape((-1,1))
-x[1]=f[1].reshape((-1,1))
-
-X=np.concatenate([x[0],x[1]],axis=1)
-i=2
-while i<4096 :
-    x[i]=f[i].reshape((-1,1))
-    X=np.concatenate([X,x[i]],axis=1)
-    print(i)
-    i+=1;
-
-
-from sklearn.linear_model import LinearRegression
-
-
-model = LinearRegression()
-model =model.fit(X, Y)
-print(model.score(X, Y))
+print("Accuracy:", accuracy)
